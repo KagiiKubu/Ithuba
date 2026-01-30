@@ -43,11 +43,18 @@ class IthubaEngine:
         response = self.llm.generate_content(system_prompt)
         return response.text
     
-    def transcribe_audio(self, audio_file):
-        """Uses Groq's Whisper-v3 to turn South African speech into text."""
+    def transcribe_audio(self, audio_data):
+        """Handles both uploaded files and live recorded bytes."""
         try:
+            # If it's live recording (bytes)
+            if isinstance(audio_data, bytes):
+                file_to_send = ("audio.wav", audio_data)
+            else:
+                # If it's an uploaded file object
+                file_to_send = (audio_data.name, audio_data.read())
+
             transcription = self.groq_client.audio.transcriptions.create(
-                file=(audio_file.name, audio_file.read()),
+                file=file_to_send,
                 model="whisper-large-v3",
                 response_format="text"
             )
