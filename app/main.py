@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from core.engine import IthubaEngine
 
 # Page Config
-st.set_page_config(page_title="Project Ithuba", page_icon="🇿🇦", layout="centered")
+st.set_page_config(page_title="Ithuba", page_icon="🇿🇦", layout="centered")
 
 # Initialize the AI Engine
 @st.cache_resource
@@ -25,6 +25,17 @@ Tell us about your work in your own words, and we'll build your professional pro
 """)
 
 st.divider()
+
+audio_input = st.file_uploader("Upload a voice note (mp3, wav, m4a)", type=["mp3", "wav", "m4a"])
+
+if audio_input:
+    with st.spinner("Transcribing your voice..."):
+        # Transcribe the audio
+        raw_text = engine.transcribe_audio(audio_input)
+        st.info(f"Transcribed: {raw_text}")
+        # Set this as the user_input for the next step
+        user_input = raw_text
+
 
 # Input Section
 user_input = st.text_area(
