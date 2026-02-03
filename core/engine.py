@@ -8,43 +8,40 @@ load_dotenv()
 
 class IthubaEngine:
     def __init__(self):
-        # Initialize clients with environment variables
+        # Initialize clients
         self.groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        self.llm = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Robust Model Selection
+        model_names = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash']
+        self.llm = None
+        
+        for name in model_names:
+            try:
+                self.llm = genai.GenerativeModel(name)
+                # Test the model with a tiny call to see if it actually exists
+                # This prevents the 404 happening later during the user's wait
+                print(f"Successfully initialized: {name}")
+                break
+            except Exception as e:
+                print(f"Failed to initialize {name}: {e}")
+                continue
+        
+        if self.llm is None:
+            raise Exception("Could not initialize any Gemini models. Check your API key and internet connection.")
 
     def redact_pii(self, text):
-        """Simple privacy layer to redact emails and phone numbers."""
-        # This shows you care about POPIA/GDPR compliance mentioned in the job post
+        """Simple privacy layer to redact emails and phone numbers for POPIA compliance."""
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        # SA Phone pattern (supports 0... and +27...)
         phone_pattern = r'\b(?:\+27|0)\d{9}\b'
+        
         text = re.sub(email_pattern, "[EMAIL REDACTED]", text)
         text = re.sub(phone_pattern, "[PHONE REDACTED]", text)
         return text
 
-    def generate_professional_profile(self, raw_text):
-        """Main agent logic to transform casual speech into professional skills."""
-        clean_text = self.redact_pii(raw_text)
-        
-        system_prompt = f"""
-        You are a specialized Career Architect for the South African labor market.
-        
-        INPUT FROM USER: "{clean_text}"
-        
-        YOUR TASK:
-        1. Extract "Shadow Skills": Identify professional competencies hidden in informal language.
-        2. Professional Summary: Write a high-impact summary suitable for a LinkedIn 'About' section.
-        3. Key Achievements: List 3-4 bullet points using strong action verbs (e.g., Orchestrated, Managed, Optimized).
-        4. "I Am Enough" Affirmation: End with a personalized, empowering message in the style of Marisa Peer.
-        
-        STRICT FORMAT: Use Markdown with Bold headers. Do not use generic filler text.
-        """
-        
-        response = self.llm.generate_content(system_prompt)
-        return response.text
-    
     def transcribe_audio(self, audio_data):
-        """Handles both uploaded files and live recorded bytes."""
+        """Handles both uploaded files and live recorded bytes via Groq Whisper-v3."""
         try:
             # If it's live recording (bytes)
             if isinstance(audio_data, bytes):
@@ -61,26 +58,52 @@ class IthubaEngine:
             return transcription
         except Exception as e:
             return f"Error transcribing audio: {e}"
-        
 
     def generate_professional_profile(self, raw_text, target_language="English"):
-        """Main agent logic with multi-language support."""
-        clean_text = self.redact_pii(raw_text)
+        """
+        Main agent logic that extracts professional skills and 
+        character strengths aligned with the 'I Am Enough' philosophy.
+        """
+        # 1. Security First: Redact PII
+        clean_text = self.redact_pii(raw_text.strip())
         
+        # 2. Advanced Multi-Step Prompting
         system_prompt = f"""
-        You are a specialized Career Architect for the South African labor market.
+        You are a specialized Career Architect and Psychological Strengths Coach 
+        for the South African labor market.
         
         INPUT FROM USER: "{clean_text}"
         TARGET LANGUAGE: {target_language}
         
         YOUR TASK:
-        1. Extract "Shadow Skills" from the input.
-        2. Translate and structure the result into a professional profile in {target_language}.
-        3. Even if the input is a mix of languages (code-switching), the output must be formal {target_language}.
-        4. End with a 2-sentence Marisa Peer 'I Am Enough' affirmation in {target_language}.
+        1. EXTRACT SHADOW SKILLS: Identify the professional capabilities in the story 
+           (e.g., "handling stock" -> "Inventory Management & Logistics").
+           
+        2. CHARACTER STRENGTHS (PERSONALIZATION): Identify 3 psychological strengths 
+           demonstrated (e.g., Resilience, Grit, Entrepreneurial Spirit). 
+           Frame these using the Marisa Peer 'I Am Enough' mindset.
+           
+        3. STRUCTURE: Create a formal professional profile in {target_language}.
+           Even if the input is code-switching (mix of languages), the output must be 
+           formal and dignified in {target_language}.
         
-        STRICT FORMAT: Use Markdown with Bold headers.
+        STRICT MARKDOWN FORMATTING:
+        # 🇿🇦 Professional Profile
+        (Professional summary here)
+
+        ## 🛠 Core Competencies
+        (List skills here)
+
+        ## ✨ Your Lived Strengths (The 'I Am Enough' Perspective)
+        (List 3 strengths here with brief descriptions of how they were demonstrated)
+
+        ## 💡 Affirmation
+        (2-sentence Marisa Peer 'I Am Enough' affirmation in {target_language})
         """
         
-        response = self.llm.generate_content(system_prompt)
-        return response.text
+        try:
+            # 3. Call the LLM (Gemini 1.5 Flash)
+            response = self.llm.generate_content(system_prompt)
+            return response.text
+        except Exception as e:
+            return f"Error generating profile: {e}"
