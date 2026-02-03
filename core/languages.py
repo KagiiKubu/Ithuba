@@ -1,0 +1,136 @@
+# core/languages.py
+
+UI_TRANSLATIONS = {
+    "English": {
+        "title": "🇿🇦 Project Ithuba",
+        "subtitle": "Your Voice is Your CV",
+        "step1": "🎙️ Step 1: Provide your story",
+        "step2": "📝 Step 2: Review or Edit",
+        "gen_btn": "Generate ✨",
+        "placeholder": "Describe your daily work/business...",
+        "sidebar_head": "⚙️ Settings",
+        "lang_label": "Interface Language:",
+        "about_head": "About",
+        "mission": "Bridging the gap between informal experience and formal recognition."
+    },
+    "isiZulu": {
+        "title": "🇿🇦 Umsebenzi Ithuba",
+        "subtitle": "Izwi lakho yi-CV yakho",
+        "step1": "🎙️ Isinyathelo 1: Landa indaba yakho",
+        "step2": "📝 Isinyathelo 2: Buyekeza noma Hlela",
+        "gen_btn": "Yenza i-CV ✨",
+        "placeholder": "Chaza umsebenzi wakho wansuku zonke...",
+        "sidebar_head": "⚙️ Izilungiselelo",
+        "lang_label": "Ulimi:",
+        "about_head": "Mayelana",
+        "mission": "Ukuvala igebe phakathi kokuhlangenwe nakho okungahlelekile nokuqashelwa okusemthethweni."
+    },
+    "isiXhosa": {
+        "title": "🇿🇦 Iprojekthi Ithuba",
+        "subtitle": "Ilizwi lakho yi-CV yakho",
+        "step1": "🎙️ Inyathelo 1: Balisa ibali lakho",
+        "step2": "📝 Inyathelo 2: Phinda ujonge okanye Uhlele",
+        "gen_btn": "Yenza i-CV ✨",
+        "placeholder": "Chaza umsebenzi wakho wemihla ngemihla...",
+        "sidebar_head": "⚙️ Izicwangciso",
+        "lang_label": "Ulwimi:",
+        "about_head": "Malunga",
+        "mission": "Ukuvala umsantsa phakathi kwamava angaphaya nokuqatshelwa okusesikweni."
+    },
+    "Afrikaans": {
+        "title": "🇿🇦 Projek Ithuba",
+        "subtitle": "Jou stem is jou CV",
+        "step1": "🎙️ Stap 1: Vertel jou storie",
+        "step2": "📝 Stap 2: Hersien of Wysig",
+        "gen_btn": "Genereer ✨",
+        "placeholder": "Beskryf jou daaglikse werk...",
+        "sidebar_head": "⚙️ Instellings",
+        "lang_label": "Taal:",
+        "about_head": "Oor",
+        "mission": "Oorbrug die gaping tussen informele ervaring en formele erkenning."
+    },
+    "Sepedi": {
+        "title": "🇿🇦 Protšeke ya Ithuba",
+        "subtitle": "Lentšu la gago ke CV ya gago",
+        "step1": "🎙️ Kgato 1: Anega kanegelo ya gago",
+        "step2": "📝 Kgato 2: Bušeletša goba o Fetole",
+        "gen_btn": "Tšweletša ✨",
+        "placeholder": "Hlaloša mošomo wa gago wa tšatši le tšatši...",
+        "sidebar_head": "⚙️ Dipeakanyo",
+        "lang_label": "Leleme:",
+        "about_head": "Ka ga",
+        "mission": "Go kopanya sekgoba magareng ga boitemogelo bja go se be molaong le temogo ya semolaong."
+    },
+    "Setswana": {
+        "title": "🇿🇦 Porojeke ya Ithuba",
+        "subtitle": "Lentswe la gago ke CV ya gago",
+        "step1": "🎙️ Kgato 1: Bolela kgang ya gago",
+        "step2": "📝 Kgato 2: Sekaseka kgotsa o Fetole",
+        "gen_btn": "Tlhamisa ✨",
+        "placeholder": "Tlhalosa tiro ya gago ya malatsi otlhe...",
+        "sidebar_head": "⚙️ Dipeakanyo",
+        "lang_label": "Puo:",
+        "about_head": "Ka ga",
+        "mission": "Go bridging sekgala gareng ga maitemogelo a a sa rulaganang le kamogelo ya semmuso."
+    },
+    "Sesotho": {
+        "title": "🇿🇦 Morero wa Ithuba",
+        "subtitle": "Lentswe la hao ke CV ya hao",
+        "step1": "🎙️ Mohato 1: Pheta pale ya hao",
+        "step2": "📝 Mohato 2: Hlahloba kapa o Fetole",
+        "gen_btn": "Hlahisa ✨",
+        "placeholder": "Hlalosa mosebetsi wa hao wa letsatsi le letsatsi...",
+        "sidebar_head": "⚙️ Dipeakanyo",
+        "lang_label": "Puo:",
+        "about_head": "Mabapi le",
+        "mission": "Ho koala lekhalo lipakeng tsa boiphihlelo bo sa reroang le kamohelo ea semmuso."
+    },
+    "Xitsonga": {
+        "title": "🇿🇦 Phurojeke ya Ithuba",
+        "subtitle": "Rito ra wena i CV ya wena",
+        "step1": "🎙️ Goza 1: Hlamusela ntsheketo wa wena",
+        "step2": "📝 Goza 2: Kambisisa kumbe u lulamisa",
+        "gen_btn": "Endla ✨",
+        "placeholder": "Hlamusela ntirho wa wena wa siku ni siku...",
+        "sidebar_head": "⚙️ Swiyimiso",
+        "lang_label": "Ririmi:",
+        "about_head": "Swithu",
+        "mission": ""
+    },
+    "siSwati": {
+        "title": "🇿🇦 Umklamo we-Ithuba",
+        "subtitle": "Livi lakho yi-CV yakho",
+        "step1": "🎙️ Linyatselo 1: Landza indzaba yakho",
+        "step2": "📝 Linyatselo 2: Buyeketa noma Uhlele",
+        "gen_btn": "Yenta ✨",
+        "placeholder": "Chaza umsebenti wakho wamalanga onkhe...",
+        "sidebar_head": "⚙️ Tinhlelo",
+        "lang_label": "Lulwimi:",
+        "about_head": "Mayelana",
+        "mission": ""
+    },
+    "Tshivenda": {
+        "title": "🇿🇦 Phurojekiti ya Ithuba",
+        "subtitle": "Ipfi lau ndi CV yau",
+        "step1": "🎙️ vhukando 1: vhambadza tshitori tshau",
+        "step2": "📝 vhukando 2: sedzulusa kana u khwinisa",
+        "gen_btn": "Bveledza ✨",
+        "placeholder": "Talutshedza mushumo wau wa duvha na duvha...",
+        "sidebar_head": "⚙️ Zwilinganyo",
+        "lang_label": "Luambo:",
+        "about_head": "Nga ha",
+        "mission": ""
+    },
+    "isiNdebele": {
+        "title": "🇿🇦 Iprojekthi ye-Ithuba",
+        "subtitle": "Ilizwi lakho yi-CV yakho",
+        "step1": "🎙️ Igadango 1: Landula indaba yakho",
+        "step2": "📝 Igadango 2: Buyekeza namkha tjhugulula",
+        "gen_btn": "Yenza ✨",
+        "placeholder": "Hlaloza umsebenzi wakho wamalanga woke...",
+        "sidebar_head": "⚙️ Izilungiselelo",
+        "lang_label": "Ilimi:",
+        "about_head": "Mayelana",
+        "mission": ""
+    }
+}
