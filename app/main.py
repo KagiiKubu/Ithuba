@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # 2. Local imports
 from core.utils import create_pdf
 from core.engine import IthubaEngine
-from core.languages import UI_TRANSLATIONS # New import
+from core.languages import UI_TRANSLATIONS 
 
 # Page Config
 st.set_page_config(page_title="Ithuba", page_icon="🇿🇦", layout="centered")
@@ -24,14 +24,13 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR (Define language first) ---
+# --- SIDEBAR ---
 st.sidebar.title("⚙️ Settings")
 language = st.sidebar.selectbox(
     "Interface Language Preference:",
     list(UI_TRANSLATIONS.keys())
 )
 
-# Pull the translations for the selected language
 t = UI_TRANSLATIONS[language]
 
 st.sidebar.divider()
@@ -45,13 +44,13 @@ def get_engine():
 
 engine = get_engine()
 
-# --- MAIN UI (Using the 't' dictionary) ---
+# --- MAIN UI ---
 st.title(t["title"])
 st.subheader(t["subtitle"])
 
 st.divider()
 
-# --- Audio Section ---
+# --- Step 1: Audio Section ---
 if 'transcribed_text' not in st.session_state:
     st.session_state.transcribed_text = ""
 
@@ -67,20 +66,28 @@ with col_up:
 audio_source = recorded_audio if recorded_audio else uploaded_audio
 
 if audio_source:
-    with st.spinner("..."):
+    with st.spinner("Transcribing..."):
         try:
             raw_text = engine.transcribe_audio(audio_source)
             st.session_state.transcribed_text = raw_text
         except Exception as e:
             st.error(f"Error: {e}")
 
-# --- Input Section ---
+# --- Step 2: Input Section ---
 st.write(f"### {t['step2']}")
 user_input = st.text_area(
-    "",
+    "Review your transcribed story:",
     value=st.session_state.transcribed_text,
     placeholder=t["placeholder"],
     height=150
+)
+
+# --- Step 3: ATS Optimizer (NEW) ---
+st.write(f"### 🎯 Step 3: Target Job (Optional)")
+target_jd = st.text_area(
+    "Paste the Job Description you are applying for to optimize for AI filters:",
+    placeholder="e.g. Seeking a Junior Software Engineer with Python experience...",
+    height=100
 )
 
 col1, col2 = st.columns([1, 4])
@@ -90,12 +97,16 @@ with col1:
 # --- Logic Execution ---
 if generate_btn:
     if user_input:
-        with st.spinner("Processing..."):
+        with st.spinner("Optimizing for ATS & Generating Profile..."):
             try:
-                # We keep the CV generation in English for professional standard
-                profile = engine.generate_professional_profile(user_input, target_language="English")
+                # Call the engine with the new job_description parameter
+                profile = engine.generate_professional_profile(
+                    user_input, 
+                    target_language="English", # Professional standard for CVs
+                    job_description=target_jd
+                )
                 
-                st.success("Success!")
+                st.success("Success! Your ATS-Optimized CV is ready.")
                 st.markdown("---")
                 st.markdown(profile)
                 
@@ -103,7 +114,7 @@ if generate_btn:
                 st.download_button(
                     label="Download PDF",
                     data=pdf_data,
-                    file_name="Ithuba_Profile.pdf",
+                    file_name="Ithuba_ATS_CV.pdf",
                     mime="application/pdf"
                 )
             except Exception as e:

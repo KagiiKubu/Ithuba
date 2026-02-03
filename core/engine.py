@@ -59,50 +59,52 @@ class IthubaEngine:
         except Exception as e:
             return f"Error transcribing audio: {e}"
 
-    def generate_professional_profile(self, raw_text, target_language="English"):
+    def generate_professional_profile(self, raw_text, target_language="English", job_description=""):
         """
-        Main agent logic that extracts professional skills and 
-        character strengths aligned with the 'I Am Enough' philosophy.
+        Generates an ATS-optimized CV. If a job_description is provided,
+        it performs a keyword-match to bypass automated filters.
         """
-        # 1. Security First: Redact PII
         clean_text = self.redact_pii(raw_text.strip())
         
-        # 2. Advanced Multi-Step Prompting
+        # Logic to handle if JD is provided or not
+        jd_context = f"TARGET JOB DESCRIPTION: {job_description}" if job_description else "No specific job description provided."
+
         system_prompt = f"""
-        You are a specialized Career Architect and Psychological Strengths Coach 
-        for the South African labor market.
+        You are a Senior Technical Recruiter and ATS (Applicant Tracking System) Expert.
         
         INPUT FROM USER: "{clean_text}"
+        {jd_context}
         TARGET LANGUAGE: {target_language}
         
         YOUR TASK:
-        1. EXTRACT SHADOW SKILLS: Identify the professional capabilities in the story 
-           (e.g., "handling stock" -> "Inventory Management & Logistics").
+        1. ATS OPTIMIZATION: Use high-traffic industry keywords found in the target job description. 
+           Translate informal experience into professional terminology (e.g., 'selling to people' -> 'Direct Sales & Relationship Management').
            
-        2. CHARACTER STRENGTHS (PERSONALIZATION): Identify 3 psychological strengths 
-           demonstrated (e.g., Resilience, Grit, Entrepreneurial Spirit). 
-           Frame these using the Marisa Peer 'I Am Enough' mindset.
+        2. QUANTIFIABLE RESULTS: Wherever possible, estimate impact (e.g., 'Optimized inventory to reduce waste' or 'Maintained 100% service availability').
            
-        3. STRUCTURE: Create a formal professional profile in {target_language}.
-           Even if the input is code-switching (mix of languages), the output must be 
-           formal and dignified in {target_language}.
+        3. STRUCTURE: Create an industry-standard CV layout. 
+           Even with code-switching, the output must be professional {target_language}.
         
         STRICT MARKDOWN FORMATTING:
-        # 🇿🇦 Professional Profile
-        (Professional summary here)
+        # [FULL NAME - REDACTED]
+        
+        ## 📝 Professional Summary
+        (A high-impact summary focusing on years of experience and top-tier skills.)
 
-        ## 🛠 Core Competencies
-        (List skills here)
+        ## 🛠 Technical & Core Competencies
+        (A list of skills grouped by 'Operational', 'Management', or 'Technical' categories.)
 
-        ## ✨ Your Lived Strengths (The 'I Am Enough' Perspective)
-        (List 3 strengths here with brief descriptions of how they were demonstrated)
+        ## 📈 Professional Experience & Achievements
+        (Bullet points using the 'Action + Context + Result' formula.)
+
+        ## ✨ Leadership & Personal Attributes (The 'I Am Enough' Perspective)
+        (Identify 3 psychological strengths demonstrated in the story. Frame them using the Marisa Peer mindset.)
 
         ## 💡 Affirmation
-        (2-sentence Marisa Peer 'I Am Enough' affirmation in {target_language})
+        (2-sentence Marisa Peer 'I Am Enough' affirmation in {target_language}.)
         """
         
         try:
-            # 3. Call the LLM (Gemini 1.5 Flash)
             response = self.llm.generate_content(system_prompt)
             return response.text
         except Exception as e:
