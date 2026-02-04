@@ -40,8 +40,10 @@ class IthubaEngine:
         text = re.sub(phone_pattern, "[PHONE REDACTED]", text)
         return text
 
-    def transcribe_audio(self, audio_data):
+    def transcribe_audio(self, audio_data, lang_name="English"):
         """Handles both uploaded files and live recorded bytes via Groq Whisper-v3."""
+
+        sa_prompt = f"This is a South African person speaking {lang_name} about their professional work experience and skills."
         try:
             # If it's live recording (bytes)
             if isinstance(audio_data, bytes):
@@ -53,6 +55,7 @@ class IthubaEngine:
             transcription = self.groq_client.audio.transcriptions.create(
                 file=file_to_send,
                 model="whisper-large-v3",
+                prompt=sa_prompt,
                 response_format="text"
             )
             return transcription
@@ -99,9 +102,6 @@ class IthubaEngine:
 
         ## ✨ Leadership & Personal Attributes
         (Identify 3 psychological strengths demonstrated in the story. Frame them using the Marisa Peer mindset.)
-
-        ## 💡 Affirmation
-        ('You are Enough' affirmation in {target_language}.)
         """
         
         try:

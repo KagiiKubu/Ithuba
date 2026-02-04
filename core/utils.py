@@ -4,7 +4,7 @@ try:
 except ImportError:
     def unidecode(text): return text
 
-def create_pdf(text):
+def create_pdf(text, user_name="Applicant Name"):
     try:
         # Initialize FPDF
         pdf = FPDF(orientation='P', unit='mm', format='A4')
@@ -23,6 +23,9 @@ def create_pdf(text):
         clean_text = unidecode(str(text))
         lines = clean_text.split('\n')
         
+        # Flag to ensure we only replace the FIRST header with the name
+        name_placed = False
+        
         for line in lines:
             line = line.strip()
             
@@ -33,14 +36,19 @@ def create_pdf(text):
                 pdf.ln(5) # Add space for empty lines
                 continue
                 
-            if line.startswith('#'):
-                # Main Headers
-                pdf.set_font("Helvetica", 'B', size=16)
-                clean_line = line.lstrip('#').strip()
-                pdf.multi_cell(WIDTH, 10, txt=clean_line, align='L')
-                pdf.ln(2)
+            if line.startswith('#') and not line.startswith('##'):
+                # Handle the Top Header (The Name)
+                pdf.set_font("Helvetica", 'B', size=20) # Larger font for your name
+                
+                # If it's the first main header and it looks like a placeholder, use real name
+                display_name = user_name.upper() if not name_placed else line.lstrip('#').strip()
+                
+                pdf.multi_cell(WIDTH, 12, txt=display_name, align='L')
+                pdf.ln(4)
+                name_placed = True
+                
             elif line.startswith('**') or line.startswith('##'):
-                # Sub-headers
+                # Section Headers (Professional Summary, Experience, etc.)
                 pdf.set_font("Helvetica", 'B', size=12)
                 clean_line = line.replace('**', '').replace('##', '').strip()
                 pdf.multi_cell(WIDTH, 8, txt=clean_line, align='L')
