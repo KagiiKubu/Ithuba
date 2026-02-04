@@ -97,11 +97,11 @@ class IthubaEngine:
         ## 📈 Professional Experience & Achievements
         (Bullet points using the 'Action + Context + Result' formula.)
 
-        ## ✨ Leadership & Personal Attributes (The 'I Am Enough' Perspective)
+        ## ✨ Leadership & Personal Attributes
         (Identify 3 psychological strengths demonstrated in the story. Frame them using the Marisa Peer mindset.)
 
         ## 💡 Affirmation
-        (2-sentence Marisa Peer 'I Am Enough' affirmation in {target_language}.)
+        ('You are Enough' affirmation in {target_language}.)
         """
         
         try:

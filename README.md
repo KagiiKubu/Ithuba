@@ -20,7 +20,7 @@ Project Ithuba is an AI-powered agentic workflow built to solve a systemic South
 - **South African Context:** Prompted specifically to recognize local industry terminology and informal economy nuances.
 
 ## 🚀 Impact Goal
-Aligned with the "I Am Enough" philosophy, Project Ithuba empowers users by showing them that their existing experience—regardless of formal titles—is valuable and "enough" for the modern workforce.
+Prpject Ithuba believes that everyone's experience is valuable and enough, so we empower users by showing them that their existing experience—regardless of formal titles—is valuable and "enough" for the modern workforce.
 
 ## 📥 Getting Started
 1. **Clone the repo:** `git clone https://github.com/your-username/project-ithuba`
