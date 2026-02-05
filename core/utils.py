@@ -6,7 +6,6 @@ except ImportError:
 
 def create_pdf(text, user_name="Applicant Name"):
     try:
-        # P = Portrait, mm = millimeters, A4 format
         pdf = FPDF(orientation='P', unit='mm', format='A4')
         pdf.add_page()
         pdf.set_auto_page_break(auto=True, margin=15)
@@ -18,7 +17,7 @@ def create_pdf(text, user_name="Applicant Name"):
         pdf.set_left_margin(L_MARGIN)
         pdf.set_right_margin(R_MARGIN)
 
-        # Ensure we are handling characters that Helvetica can't render
+        # Force character cleaning - latin-1 is the only thing standard PDF fonts handle well
         clean_text = unidecode(str(text))
         lines = clean_text.split('\n')
 
@@ -32,7 +31,6 @@ def create_pdf(text, user_name="Applicant Name"):
                 pdf.ln(5) 
                 continue
                 
-            # Header logic
             if line.startswith('#') and not line.startswith('##'):
                 pdf.set_font("Helvetica", 'B', size=20)
                 display_name = user_name.upper() if not name_placed else line.lstrip('#').strip()
@@ -40,23 +38,24 @@ def create_pdf(text, user_name="Applicant Name"):
                 pdf.ln(4)
                 name_placed = True
                 
-            # Subheaders
             elif line.startswith('**') or line.startswith('##'):
                 pdf.set_font("Helvetica", 'B', size=12)
                 clean_line = line.replace('**', '').replace('##', '').strip()
                 pdf.multi_cell(WIDTH, 8, txt=clean_line, align='L')
             
-            # Normal Body Text
             else:
                 pdf.set_font("Helvetica", size=11)
-                # Clean markdown bold/italic tags for the PDF
                 clean_line = line.replace('**', '').replace('*', '').strip()
                 pdf.multi_cell(WIDTH, 6, txt=clean_line, align='L')
 
-        # Use output() and convert to bytes - this is more stable in Streamlit Cloud
-        return bytes(pdf.output())
+        # FIX: Explicitly request 'S' (string/buffer) and ensure it's cast to bytes
+        pdf_output = pdf.output(dest='S')
+        
+        if isinstance(pdf_output, str):
+            return pdf_output.encode('latin-1')
+        return bytes(pdf_output)
         
     except Exception as e:
-        # This will show up in your Streamlit 'Manage App' logs
-        print(f"CRITICAL PDF ERROR: {e}")
+        # This will now definitely show up in Streamlit Cloud "Manage app" logs
+        print(f"CRITICAL PDF ERROR: {str(e)}")
         return None
