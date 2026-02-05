@@ -3,20 +3,6 @@ import sys
 import os
 from audio_recorder_streamlit import audio_recorder
 
-ISO_LANG_MAP = {
-    "English": "en",
-    "isiZulu": "zu",
-    "isiXhosa": "xh",
-    "Afrikaans": "af",
-    "Sepedi": "nso",   # Northern Sotho
-    "Setswana": "tn",
-    "Sesotho": "st",
-    "Xitsonga": "ts",
-    "siSwati": "ss",
-    "Tshivenda": "ve",
-    "isiNdebele": "nr"
-}
-
 # 1. Path setup
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -47,13 +33,28 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- SIDEBAR ---
-st.sidebar.title("⚙️ Settings")
-language = st.sidebar.selectbox("Interface Language Preference:", list(UI_TRANSLATIONS.keys()))
-t = UI_TRANSLATIONS[language]
+# We use a temporary language selection to get the correct 't' dictionary
+temp_lang = st.sidebar.selectbox("Select Language / Khetha Ulimi:", list(UI_TRANSLATIONS.keys()))
+t = UI_TRANSLATIONS[temp_lang]
+
+st.sidebar.title(t["sidebar_head"])
+
+st.sidebar.divider()
+if st.sidebar.button("🗑️ Clear All / Sula Konke"):
+    for key in st.session_state.keys():
+        del st.session_state[key]
+    st.rerun()
+# We re-render the selectbox with the translated label
+language = temp_lang # Keep the selection
+st.sidebar.write(f"**{t['lang_label']}** {language}")
 
 st.sidebar.divider()
 st.sidebar.title(t["about_head"])
 st.sidebar.info(t["mission"])
+
+st.sidebar.divider()
+st.sidebar.caption("Built for the South African workforce 🇿🇦")
+st.sidebar.caption("v1.0.2 | Stable Release")
 
 # Initialize Engine
 @st.cache_resource
@@ -78,24 +79,32 @@ audio_source = recorded_audio if recorded_audio else uploaded_audio
 if audio_source:
     with st.spinner("Transcribing..."):
         try:
-            # Pass the actual name of the language selected in the sidebar
+            # Using the 'prompt' method we discussed to avoid 400 errors
             st.session_state.transcribed_text = engine.transcribe_audio(
                 audio_source, 
-                lang_name=language # Pass "isiZulu", "isiXhosa", etc.
+                lang_name=language 
             )
         except Exception as e:
             st.error(f"Error transcribing: {e}")
 
 # --- Step 2: Input Section ---
 st.write(f"### {t['step2']}")
-user_input = st.text_area("Review your story:", value=st.session_state.transcribed_text, height=150)
+user_input = st.text_area(
+    t["review_label"], 
+    value=st.session_state.transcribed_text, 
+    height=150,
+    placeholder=t["placeholder_story"]
+)
 
-# --- Step 3: Personalization & Job Context ---
-st.write(f"### 👤 {t.get('step3', 'Step 3: Personalize')}")
-full_name = st.text_input("Enter your Full Name (for the PDF header):", placeholder="e.g. Sipho Khumalo")
+st.write(f"### {t['step3']}")
+full_name = st.text_input(t["name_label"], placeholder="e.g. Sipho Khumalo")
 
-st.write(f"### 🎯 Step 4: Target Job (Optional)")
-target_jd = st.text_area("Paste Job Description:", height=100)
+# --- Step 4: Target Job ---
+st.write(f"### {t['step4']}")
+target_jd = st.text_area(
+    t["jd_label"], 
+    height=100, 
+    placeholder=t["placeholder_jd"])
 
 generate_btn = st.button(t["gen_btn"])
 
@@ -112,7 +121,6 @@ if generate_btn and user_input:
             st.session_state.current_profile = profile_text
             
             # 3. Create PDF and pass the user's name
-            # If name is empty, we fall back to a generic label
             pdf_bytes = create_pdf(profile_text, user_name=full_name if full_name else "Valued Candidate")
             
             if pdf_bytes:
@@ -127,7 +135,7 @@ if generate_btn and user_input:
 # --- DISPLAY (Always runs if content exists) ---
 if st.session_state.current_profile:
     st.markdown("---")
-    st.markdown("### 📄 Preview")
+    st.markdown(f"### 📄 {t['review_label'].replace(':', '')}")
     st.markdown(st.session_state.current_profile)
     
     if st.session_state.pdf_data:
