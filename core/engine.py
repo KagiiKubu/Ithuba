@@ -8,19 +8,17 @@ load_dotenv()
 
 class IthubaEngine:
     def __init__(self):
-        # Initialize clients
+
         self.groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        
-        # Robust Model Selection
+
         model_names = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash']
         self.llm = None
         
         for name in model_names:
             try:
                 self.llm = genai.GenerativeModel(name)
-                # Test the model with a tiny call to see if it actually exists
-                # This prevents the 404 happening later during the user's wait
+
                 print(f"Successfully initialized: {name}")
                 break
             except Exception as e:
@@ -33,7 +31,6 @@ class IthubaEngine:
     def redact_pii(self, text):
         """Simple privacy layer to redact emails and phone numbers for POPIA compliance."""
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-        # SA Phone pattern (supports 0... and +27...)
         phone_pattern = r'\b(?:\+27|0)\d{9}\b'
         
         text = re.sub(email_pattern, "[EMAIL REDACTED]", text)
@@ -45,11 +42,9 @@ class IthubaEngine:
 
         sa_prompt = f"This is a South African person speaking {lang_name} about their professional work experience and skills."
         try:
-            # If it's live recording (bytes)
             if isinstance(audio_data, bytes):
                 file_to_send = ("audio.wav", audio_data)
             else:
-                # If it's an uploaded file object
                 file_to_send = (audio_data.name, audio_data.read())
 
             transcription = self.groq_client.audio.transcriptions.create(
@@ -68,8 +63,7 @@ class IthubaEngine:
         it performs a keyword-match to bypass automated filters.
         """
         clean_text = self.redact_pii(raw_text.strip())
-        
-        # Logic to handle if JD is provided or not
+
         jd_context = f"TARGET JOB DESCRIPTION: {job_description}" if job_description else "No specific job description provided."
 
         system_prompt = f"""
