@@ -78,7 +78,13 @@ class IthubaEngine:
         INPUT FROM USER: "{clean_text}"
         {jd_context}
         TARGET LANGUAGE: {target_language}
-        
+
+        CRITICAL INSTRUCTION: 
+        - NEVER use placeholders like [Date], [City], or [Company Name]. 
+        - If a specific date, location, or company name is NOT mentioned in the user's story, DO NOT include a line for it.
+        - Focus on the skills and responsibilities described.
+        - Format the output clearly using professional headings.
+            
         YOUR TASK:
         1. ATS OPTIMIZATION: Use high-traffic industry keywords found in the target job description. 
            Translate informal experience into professional terminology (e.g., 'selling to people' -> 'Direct Sales & Relationship Management').
