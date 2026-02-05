@@ -15,7 +15,7 @@ Project Ithuba is an AI-powered agentic workflow built to solve a systemic South
 
 ## 🛠 Tech Stack & Architecture
 - **Language:** Python 3.11+
-- **LLM Orchestration:** Google Gemini 1.5 Flash (for high-speed skill extraction)
+- **LLM Orchestration:** Google Gemini 2.5 Flash (for high-speed skill extraction)
 - **Speech-to-Text:** OpenAI Whisper via Groq (Optimized for SA accents & speed)
 - **PDF Generation:** FPDF2 (In-memory byte-stream generation)
 - **UI:** Streamlit (Customized with CSS for a premium dark-mode experience)
