@@ -125,7 +125,8 @@ if generate_btn and user_input:
             
             if pdf_bytes:
                 st.session_state.pdf_data = pdf_bytes
-                st.success("Success! Your ATS-Optimized CV is ready.")
+                st.balloons() # This adds a "Wow" factor
+                st.success(f"🎊 {t['gen_btn'].replace('✨', '')} Success!")
             else:
                 st.error("Text was generated, but PDF creation failed.")
                 
